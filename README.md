@@ -1,3 +1,6 @@
+# Saída do `flutter doctor`
+
+```text
 [✓] Flutter (Channel stable, 3.41.9, on Ubuntu 24.04.5 LTS 7.0.0-42-generic, locale
     pt_BR.UTF-8) [31ms]
     # • Flutter version 3.41.9 on channel stable at
@@ -54,3 +57,4 @@
     # • All expected network resources are available.
 
 ! Doctor found issues in 1 category.
+```
