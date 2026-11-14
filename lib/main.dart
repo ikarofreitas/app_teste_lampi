@@ -17,7 +17,19 @@ class MyApp extends StatelessWidget {
         title: 'Namer App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF3D7158),
+            surface: const Color(0xFFFAFBF7),
+          ),
+          scaffoldBackgroundColor: const Color(0xFFF1F4EE),
+          cardTheme: CardThemeData(
+            clipBehavior: Clip.antiAlias,
+            elevation: 0,
+            margin: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
         ),
         home: const MyHomePage(),
       ),
@@ -73,14 +85,19 @@ class _MyHomePageState extends State<MyHomePage> {
               SafeArea(
                 child: NavigationRail(
                   extended: constraints.maxWidth >= 600,
+                  backgroundColor: const Color(0xFFFAFBF7),
+                  labelType: constraints.maxWidth >= 600
+                      ? NavigationRailLabelType.none
+                      : NavigationRailLabelType.all,
+                  indicatorColor: const Color(0xFFDCE9DD),
                   destinations: const [
                     NavigationRailDestination(
                       icon: Icon(Icons.home),
-                      label: Text('Home'),
+                      label: Text('Ínicio'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
+                      label: Text('Favoritos'),
                     ),
                   ],
                   selectedIndex: selectedIndex,
@@ -92,8 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Expanded(
-                child: Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                child: ColoredBox(
+                  color: const Color(0xFFF1F4EE),
                   child: page,
                 ),
               ),
@@ -114,30 +131,79 @@ class GeneratorPage extends StatelessWidget {
     final pair = appState.current;
     final isFavorite = appState.favorites.contains(pair);
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BigCard(pair: pair),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(32),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 680),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ElevatedButton.icon(
-                onPressed: appState.toggleFavorite,
-                icon: Icon(
-                  isFavorite ? Icons.favorite : Icons.favorite_border,
-                ),
-                label: const Text('Like'),
+              const SizedBox(height: 24),
+              Text(
+                'GERADOR DE PALAVRAS :D',
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.4,
+                    ),
               ),
-              const SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: appState.getNext,
-                child: const Text('Next'),
+              const SizedBox(height: 8),
+              Text(
+                'Encontre sua próxima ideia',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: const Color(0xFF263B30),
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Basta clicar e descobrir uma nova palavra.',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: const Color(0xFF65736A),
+                    ),
+              ),
+              const SizedBox(height: 32),
+              BigCard(pair: pair),
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  FilledButton.tonalIcon(
+                    onPressed: appState.toggleFavorite,
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                    ),
+                    label: const Text('Like'),
+                    style: FilledButton.styleFrom(
+                      foregroundColor: const Color(0xFF3D7158),
+                      backgroundColor: const Color(0xFFDCE9DD),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                    ),
+                  ),
+                  FilledButton.icon(
+                    onPressed: appState.getNext,
+                    icon: const Icon(Icons.arrow_forward),
+                    label: const Text('Próxima'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF3D7158),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 22,
+                        vertical: 16,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -151,18 +217,34 @@ class BigCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!.copyWith(
+    final style = theme.textTheme.displaySmall!.copyWith(
       color: theme.colorScheme.onPrimary,
+      fontWeight: FontWeight.w700,
+      letterSpacing: -1,
     );
 
     return Card(
-      color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(
-          pair.asLowerCase,
-          style: style,
-          semanticsLabel: '${pair.first} ${pair.second}',
+      color: const Color(0xFF3D7158),
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 44),
+          child: Column(
+            children: [
+              Icon(
+                Icons.auto_awesome,
+                size: 28,
+                color: const Color(0xFFC9DEC9),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                pair.asLowerCase,
+                style: style,
+                textAlign: TextAlign.center,
+                semanticsLabel: '${pair.first} ${pair.second}',
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -177,21 +259,58 @@ class FavoritesPage extends StatelessWidget {
     final appState = context.watch<MyAppState>();
 
     if (appState.favorites.isEmpty) {
-      return const Center(child: Text('No favorites yet.'));
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.favorite_border,
+              size: 44,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Ainda não há favoritos.',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView(
+      padding: const EdgeInsets.all(32),
       children: [
+        Text(
+          'SUA COLEÇÃO',
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.4,
+              ),
+        ),
+        const SizedBox(height: 8),
         Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(bottom: 24),
           child: Text(
-            'You have ${appState.favorites.length} favorites:',
+            'Você tem ${appState.favorites.length} favoritos:',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: const Color(0xFF263B30),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
         ),
         for (final pair in appState.favorites)
-          ListTile(
-            leading: const Icon(Icons.favorite),
-            title: Text(pair.asLowerCase),
+          Card(
+            color: const Color(0xFFFAFBF7),
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListTile(
+              leading: Icon(
+                Icons.favorite,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              title: Text(pair.asLowerCase),
+            ),
           ),
       ],
     );
